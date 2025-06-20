@@ -80,3 +80,38 @@ export default nextConfig;
 // app\dashboard\layout.tsx
 export const experimental_ppr = true;
 ```
+
+## use client 指令
+
+在 Next.js 中，`use client` 指令用于指定某个组件应作为客户端组件（Client Component）运行。
+默认情况下，Next.js 中的组件都是服务端组件（Server Component）。
+客户端组件允许使用诸如 `useState`、`useEffect` 等 React 钩子，以及事件处理函数如 `onClick`
+
+
+## 添加搜索和分页
+
+### 钩子函数
+
+- `useSearchParams`- 允许您访问当前 URL 的参数。例如，此 `URL /dashboard/invoices?page=1&query=pending` 的搜索参数将如下所示：`{page： '1'， query： 'pending'}`。
+- `usePathname` - 允许您读取当前 URL 的路径名。例如，对于路由 `/dashboard/invoices`，usePathname 将返回 `/dashboard/invoices`。
+- `useRouter` - 以编程方式在客户端组件内的路由之间启用导航。您可以使用多种方法 。
+
+- `URLSearchParams` 是一个 Web API，它提供用于作 URL 查询参数的实用工具方法。您可以使用它来获取参数字符串，而不是创建复杂的字符串文本，例如 `?page=1&query=a`。
+
+### 去抖动
+去抖动的工作原理：
+1. Trigger Event：当应该去抖动的事件（如搜索框中的击键）发
+2. Wait等待 ：如果在计时器过期之前发生了新事件，则重置计时器。
+3. Execution执行 ：如果计时器到达倒计时结束，则执行 debounced 函数。
+
+- 或者使用一个名为 `use-debounce` 的库。
+
+```js
+// pnpm i use-debounce
+import { useDebouncedCallback } from 'use-debounce';
+
+// 在函数是使用
+const handlerSearch = useDebouncedCallback(() => {
+  // 执行事件等等...
+},300)
+```
