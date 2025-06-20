@@ -51,3 +51,32 @@ return (
 
 - 你需要一整个页面加载，就用`loading.tsx`做整个骨架屏效果
 - 如果`个别组件加载很慢`，可以每一个都封装成流，用`Suspense组件分装`, 创建交错效果
+
+## Partial Prerendering 部分预处理
+
+- 不依赖数据：静态的static
+- 依赖经常更改的数据：动态的dynamic
+
+部分预渲染上下文中的holes 漏洞是什么？
+- 动态内容将异步加载的位置
+
+使用方法：
+1. 启用 Partial Prerendering (部分预处理)
+```js
+// next.config.ts
+import type { NextConfig } from 'next';
+ 
+const nextConfig: NextConfig = {
+  experimental: {
+    ppr: 'incremental'
+  }
+};
+ 
+export default nextConfig;
+```
+
+2. 只要在`静态文件中配置`,剩下的动态部分用 `Suspend` 分装，next.js就会知道路由哪些部分是动态和静态
+```js
+// app\dashboard\layout.tsx
+export const experimental_ppr = true;
+```
