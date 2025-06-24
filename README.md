@@ -115,3 +115,45 @@ const handlerSearch = useDebouncedCallback(() => {
   // 执行事件等等...
 },300)
 ```
+
+## 更改数据
+
+- 可以使用 Zod，这是一个 TypeScript 优先的验证库，
+
+使用
+```ts
+ 
+import { z } from 'zod';
+ 
+const FormSchema = z.object({
+  id: z.string(),
+  customerId: z.string(),
+  amount: z.coerce.number(), // amount 字段专门设置为从字符串强制 （更改） 为数字，同时还验证其类型。
+  status: z.enum(['pending', 'paid']),
+  date: z.string(),
+});
+ 
+const CreateInvoice = FormSchema.omit({ id: true, date: true });
+
+```
+然后，您可以将 `formData` 传递给 `CreateInvoice` 以验证类型：
+```ts
+// ...
+export async function createInvoice(formData: FormData) {
+  const { customerId, amount, status } = CreateInvoice.parse({
+    customerId: formData.get('customerId'),
+    amount: formData.get('amount'),
+    status: formData.get('status'),
+  });
+}
+```
+
+### 重新验证和重定向
+```js
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+
+revalidatePath('/dashboard/invoices'); // 更新数据库后，将重新验证 /dashboard/invoices 路径，并从服务器获取新数据。
+redirect('/dashboard/invoices'); // 重定向回 /dashboard/invoices 页面。
+```
+
