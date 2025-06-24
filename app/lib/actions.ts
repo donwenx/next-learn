@@ -33,3 +33,24 @@ export async function createInvoice(formDate: FormData) {
   revalidatePath('/dashboard/invoices'); // 更新数据库后，将重新验证 /dashboard/invoices 路径，并从服务器获取新数据。
   redirect('/dashboard/invoices'); // 重定向回 /dashboard/invoices 页面。
 }
+
+const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+
+export async function updateInvoice(id: string, formDate: FormData) {
+  const { customerId, amount, status } = UpdateInvoice.parse({
+    customerId: formDate.get('customerId'),
+    amount: formDate.get('amount'),
+    status: formDate.get('status'),
+  });
+
+  const amountInCents = amount * 100;
+
+  await sql`
+    UPDATE invoices 
+    SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+    WHERE id = ${id}
+  `;
+  
+  revalidatePath('/dashboard/invoices');
+  redirect('/dashboard/invoices');
+}
