@@ -25,10 +25,14 @@ export async function createInvoice(formDate: FormData) {
   const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
 
-  await sql`
-    INSERT INTO invoices (customer_id, amount, status, date)
-    VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-  `;
+  try {
+    await sql`
+      INSERT INTO invoices (customer_id, amount, status, date)
+      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+    `;
+  } catch (error) {
+    console.error(error)
+  }
 
   revalidatePath('/dashboard/invoices'); // 更新数据库后，将重新验证 /dashboard/invoices 路径，并从服务器获取新数据。
   redirect('/dashboard/invoices'); // 重定向回 /dashboard/invoices 页面。
@@ -45,11 +49,15 @@ export async function updateInvoice(id: string, formDate: FormData) {
 
   const amountInCents = amount * 100;
 
-  await sql`
-    UPDATE invoices 
-    SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-    WHERE id = ${id}
-  `;
+  try {
+    await sql`
+      UPDATE invoices 
+      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    console.error(error)
+  }
   
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');

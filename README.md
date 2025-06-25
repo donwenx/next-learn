@@ -157,3 +157,80 @@ revalidatePath('/dashboard/invoices'); // 更新数据库后，将重新验证 /
 redirect('/dashboard/invoices'); // 重定向回 /dashboard/invoices 页面。
 ```
 
+## 错误处理
+
+- 可以使用 `error.tsx` 处理
+- 也可以使用 `not-found.tsx` 处理
+- notFound 将优先于 error.tsx
+
+### error 使用
+```ts
+// 任意页面中
+// 抛出了错误，就会触发error.tsx
+  throw new Error('');
+```
+
+```tsx
+// error.tsx
+'use client'
+
+import { useEffect } from "react"
+
+export default function Error({
+  error,
+  reset,
+} : {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    // 可选地将错误记录到错误报告服务
+    console.error(error)
+  }, [error]);
+
+  return (
+    <main className="flex h-full flex-col items-center justify-center">
+      <h2 className="text-center">Something went wrong!</h2>
+      <button
+        className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
+        onClick={() => reset()}
+      >
+        Try again
+      </button>
+    </main>
+  );
+}
+```
+
+### notFound 使用：
+```tsx
+import Link from "next/link";
+import { FaceFrownIcon } from "@heroicons/react/24/outline";
+
+export default function NotFound() {
+  return (
+    <main className="flex h-full flex-col items-center justify-center gap-2">
+      <FaceFrownIcon className="w-10 text-gray-400" />
+      <h2 className="text-xl font-semibold">404 Not Found</h2>
+      <p>Could not find the requested invoice.</p>
+      <Link
+        href="/dashboard/invoices"
+        className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
+      >
+        Go Back
+      </Link>
+    </main>
+  );
+}
+```
+
+```ts
+// page.tsx
+import { notFound } from 'next/navigation';
+
+// 需要再使用的页面中引入，并调用处理
+// 错误处理
+if(!invoice) {
+  notFound();
+}
+```
