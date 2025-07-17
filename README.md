@@ -253,3 +253,35 @@ AUTH_SECRET=your-secret-key
 user@nextmail.com
 123456
 ```
+
+## 添加元数据
+
+- 例如添加网页标题
+- 模板中的 `%s` 将替换为特定的页面标题。
+```js
+// app\layout.tsx
+// 导入Metadata
+import { Metadata } from 'next';
+ 
+//  申明一个metadata就可以使用了
+export const metadata:Metadata = {
+  title: {
+    template: '%s | Acme Dashboard',
+    default: 'Acme Dashboard',
+  },
+  description: 'The official Next.js Course Dashboard, built with App Router.',
+  metadataBase: new URL('https://next-learn-dashboard.vercel.sh'),
+};
+```
+
+- 子页面
+```js
+// app\dashboard\invoices\page.tsx
+// 导入Metadata
+import { Metadata } from 'next';
+ 
+//  申明一个metadata就可以使用了
+export const metadata:Metadata = {
+  title: 'Invoices',
+};
+```
