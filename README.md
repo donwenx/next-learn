@@ -234,3 +234,22 @@ if(!invoice) {
   notFound();
 }
 ```
+
+## 添加身份验证
+
+使用 NextAuth.js 为您的应用程序添加身份验证。
+- 接下来，为您的应用程序生成密钥。此密钥用于加密 Cookie，确保用户会话的安全性。您可以通过在终端中运行以下命令来执行此作：
+```js
+# macOS
+openssl rand -base64 32
+# Windows 用这个 https://generate-secret.vercel.app/32
+```
+在 .env 文件中，将生成的密钥添加到 AUTH_SECRET 变量中：
+```js
+AUTH_SECRET=your-secret-key
+```
+
+```js
+user@nextmail.com
+123456
+```
